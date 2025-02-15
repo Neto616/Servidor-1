@@ -6,6 +6,7 @@ module.exports = function(app,upload) {
 	app.get('/', async (req, res) => {
 		try {
 		  console.log("Entro el fetch")
+		  return res.json({ estatus: 1, info: "Saludos" })
 		} catch (error) {
 		  console.log(error)
 		}
