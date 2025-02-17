@@ -48,6 +48,7 @@ module.exports = function(app,upload) {
 					data: data
 				});
 			}else{
+				console.log(err)
 				res.status(500).json({
 					success: false,
 					msg: 'Error'
@@ -97,23 +98,28 @@ module.exports = function(app,upload) {
 
 	// Rutas para solicitudes de cliente 1
 	app.post('/solicitud1', async (req, res) => {
-		const { id } = req.body;
-
-		if (id === undefined) {
-			return res.status(400).json({ error: "Falta el ID de la solicitud" });
+		try {
+			
+			const { id } = req.body;
+	
+			if (id === undefined) {
+				return res.status(400).json({ error: "Falta el ID de la solicitud" });
+			}
+	
+			if (![0, 1].includes(id)) {
+				return res.status(400).json({ error: "ID de solicitud inválido para cliente 1" });
+			}
+	
+			tareasPendientes.cliente1 = id === 1 ? { id: 1 } : { id: 0 };
+			bandera1 = true;
+	
+			console.log(`Solicitud para cliente 1 registrada con ID: ${id}`);
+			// Esperar los datos para enviar respuesta
+			await esperarDatos(id, res);
+			//graficaCliente1 = null;
+		} catch (error) {
+			console.log("Error en /solicitud1\n",error)
 		}
-
-		if (![0, 1].includes(id)) {
-			return res.status(400).json({ error: "ID de solicitud inválido para cliente 1" });
-		}
-
-		tareasPendientes.cliente1 = id === 1 ? { id: 1 } : { id: 0 };
-		bandera1 = true;
-
-		console.log(`Solicitud para cliente 1 registrada con ID: ${id}`);
-		// Esperar los datos para enviar respuesta
-		await esperarDatos(id, res);
-		//graficaCliente1 = null;
 	});
 
 	// Rutas para solicitudes de cliente 2
