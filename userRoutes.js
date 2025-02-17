@@ -16,8 +16,8 @@ module.exports = function(app,upload) {
 			(err, data) => {
 				//res.json({"foo" : "bar"}); 
 				console.log(data)
-				res.json('hola')
-				//res.json(data)
+				// res.json('hola')
+				res.json(data)
 			}
 		);
 	});
@@ -216,21 +216,26 @@ module.exports = function(app,upload) {
 
 	// Subir promedio
 	app.post('/promedio', (req, res) => {
-		const { promedio: nuevoPromedio } = req.body;
+		try {
+			const { promedio: nuevoPromedio } = req.body;
 
-		if (nuevoPromedio === undefined) {
-			return res.status(400).json({ error: 'Falta el valor del promedio' });
-		}
-
-		const tarea = tareasPendientes.cliente1;
-		if (tarea && tarea.id === 0) {
-			promedio = nuevoPromedio;
-			tareasPendientes.cliente1 = null;
-			bandera1 = false;
-			
-			return res.status(200).json({ msg: 'Promedio procesado y almacenado' });
-		} else {
-			return res.status(400).json({ error: 'No se esperaba el cálculo del promedio' });
+			if (nuevoPromedio === undefined) {
+				return res.status(400).json({ error: 'Falta el valor del promedio' });
+			}
+	
+			const tarea = tareasPendientes.cliente1;
+			if (tarea && tarea.id === 0) {
+				promedio = nuevoPromedio;
+				tareasPendientes.cliente1 = null;
+				bandera1 = false;
+				
+				return res.status(200).json({ msg: 'Promedio procesado y almacenado' });
+			} else {
+				return res.status(400).json({ error: 'No se esperaba el cálculo del promedio' });
+			}	
+		} catch (error) {
+			console.log(error);
+			return res.json({estatus: 0, msg: "Hubo un error"});
 		}
 	});
 
